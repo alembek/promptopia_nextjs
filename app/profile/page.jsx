@@ -6,16 +6,35 @@ import {useRouter} from 'next/navigation'
 
 import Profile from "@components/profile"
 
-const Profile = () => {
-  return (
+const MyProfile = () => {
+    const {data:session} = useSession()
+
+    const [posts, setPosts] = useState([])
+
+useEffect(() => {
+    const fetchPosts = async () => {
+    const response = await fetch(`/api/users/${session?.user.id}/posts`);
+    const data = await response.json();
+
+    setPosts(data);
+    };
+    if (session?.user.id)fetchPosts();
+}, []);
+    const handleEdit =()=>{
+
+    }
+    const handleDelete = async ()=>{
+
+    }
+return (
     <Profile
     name="My"
     desc="Welcome to your personolized profile page"
-    data={[data]}
-    handleEdit={}
-    handleDelete={}
+    data={posts}
+    handleEdit={handleEdit}
+    handleDelete={handleDelete}
     />
-  )
+)
 }
 
-export default Profile
+export default MyProfile

@@ -8,7 +8,7 @@ import Profile from "@components/profile"
 
 const MyProfile = () => {
     const {data:session} = useSession()
-
+    const router =useRouter()
     const [posts, setPosts] = useState([])
 
 useEffect(() => {
@@ -20,11 +20,24 @@ useEffect(() => {
     };
     if (session?.user.id)fetchPosts();
 }, []);
-    const handleEdit =()=>{
 
+    const handleEdit =(post)=>{
+        router.push(`/update-prompt?id=${post._id}`)
     }
-    const handleDelete = async ()=>{
+    const handleDelete = async (post)=>{
+        const hasConfirmed = confirm ("Are you sure you want to delete this prompt?")
 
+        if (hasConfirmed){
+            try{
+                await fetch(`/api/prompt/${post._id.toString()}`, {
+                    method:'DELETE'
+                })
+                const fillteredPosts = myPosts.filter((p)=>p._id!==post._id)
+                setPosts(fillteredPosts)
+            }   catch(error){
+                console.log(error)
+            }
+        }
     }
 return (
     <Profile
